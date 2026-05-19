@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#FAF7F2">
+<title>Dog Food Calculator — How Much Should I Feed My Dog?</title>
+<meta name="description" content="Free dog food calculator. Enter your dog's breed size, age, weight and activity level to find out exactly how much to feed them every day. No signup, works offline.">
+<meta name="keywords" content="dog food calculator, how much to feed my dog, dog feeding guide, dog portion calculator, daily dog food amount">
+<meta property="og:title" content="Dog Food Calculator — How Much Should I Feed My Dog?">
+<meta property="og:description" content="Get your dog's exact daily food portion in seconds. Free, no account, works offline.">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #FAF7F2;
+  --cream-dark: #F2EDE4;
+  --white: #FFFFFF;
+  --border: #DDD5C8;
+  --border-dark: #C4B5A0;
+  --text: #1E1810;
+  --text-mid: #5A4A3C;
+  --text-light: #8A7A6E;
+  --green: #2D5E3F;
+  --green-hover: #245033;
+  --green-light: #EAF2EC;
+  --green-mid: #4A8060;
+  --gold: #A8690A;
+  --gold-light: #FEF5E4;
+  --red-light: #FDF0EE;
+  --red: #B5351C;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--cream);
+  color: var(--text);
+  font-family: 'Atkinson Hyperlegible', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── Layout ── */
+.page {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 40px 20px 80px;
+}
+
+/* ── Header ── */
+header {
+  text-align: center;
+  margin-bottom: 40px;
+  animation: fadeDown 0.6s ease both;
+}
+.dog-icon {
+  font-size: 56px;
+  display: block;
+  margin-bottom: 14px;
+  animation: wag 3s ease-in-out infinite;
+}
+@keyframes wag {
+  0%,100%  { transform: rotate(-4deg); }
+  50%      { transform: rotate(4deg); }
+}
+h1 {
+  font-family: 'Fraunces', serif;
+  font-size: 2.6rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+h1 em { font-style: italic; color: var(--green); }
+.tagline {
+  margin-top: 10px;
+  font-size: 1rem;
+  color: var(--text-mid);
+}
+
+/* ── Card ── */
+.card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 32px 28px;
+  margin-bottom: 20px;
+  animation: fadeUp 0.6s ease both;
+}
+.card + .card { animation-delay: 0.08s; }
+
+/* ── Section label ── */
+.sect-label {
+  font-family: 'Fraunces', serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sect-label .ico { font-size: 1.1rem; }
+
+/* ── Name input ── */
+.name-input {
+  width: 100%;
+  padding: 14px 18px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-family: 'Atkinson Hyperlegible', sans-serif;
+  font-size: 1.1rem;
+  color: var(--text);
+  background: var(--cream);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+.name-input::placeholder { color: var(--text-light); }
+.name-input:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(45,94,63,0.12);
+  background: var(--white);
+}
+
+/* ── Pill buttons ── */
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+.pill {
+  padding: 11px 20px;
+  border-radius: 50px;
+  border: 1.5px solid var(--border);
+  background: var(--cream);
+  font-family: 'Atkinson Hyperlegible', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-mid);
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.pill:hover { border-color: var(--green-mid); color: var(--green); background: var(--green-light); }
+.pill.on {
+  background: var(--green);
+  border-color: var(--green);
+  color: var(--white);
+}
+.pill .sub {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 400;
+  opacity: 0.8;
+  margin-top: 1px;
+}
+
+/* ── Weight dial ── */
+.weight-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  max-width: 220px;
+}
+.w-btn {
+  width: 52px; height: 56px;
+  background: var(--cream);
+  border: 1.5px solid var(--border);
+  color: var(--text-mid);
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center;
+  user-select: none; -webkit-user-select: none; touch-action: none;
+  font-weight: 700;
+}
+.w-btn.left  { border-radius: 12px 0 0 12px; }
+.w-btn.right { border-radius: 0 12px 12px 0; }
+.w-btn:hover  { background: var(--green-light); color: var(--green); border-color: var(--green-mid); }
+.w-btn:active { background: var(--green); color: var(--white); }
+.w-val {
+  flex: 1;
+  height: 56px;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-left: none; border-right: none;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif;
+  font-size: 1.8rem; font-weight: 600;
+  color: var(--text);
+  min-width: 90px;
+}
+.w-unit {
+  font-size: 1rem;
+  color: var(--text-light);
+  margin-left: 4px;
+  font-family: 'Atkinson Hyperlegible', sans-serif;
+  font-weight: 400;
+}
+.w-hint {
+  margin-top: 10px;
+  font-size: 0.82rem;
+  color: var(--text-light);
+}
+
+/* ── Calculate button ── */
+.calc-btn {
+  width: 100%;
+  padding: 18px;
+  background: var(--green);
+  border: none;
+  border-radius: 14px;
+  color: var(--white);
+  font-family: 'Fraunces', serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-style: italic;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(45,94,63,0.25);
+  margin-top: 8px;
+}
+.calc-btn:hover {
+  background: var(--green-hover);
+  box-shadow: 0 6px 24px rgba(45,94,63,0.35);
+  transform: translateY(-1px);
+}
+.calc-btn:active { transform: none; }
+
+/* ── Results ── */
+.results { display: none; }
+.results.on { display: block; animation: fadeUp 0.5s ease both; }
+
+.result-hero {
+  background: var(--green);
+  border-radius: 18px;
+  padding: 28px 24px;
+  text-align: center;
+  margin-bottom: 16px;
+  color: var(--white);
+}
+.hero-name {
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.8;
+  margin-bottom: 8px;
+}
+.hero-kcal {
+  font-family: 'Fraunces', serif;
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.hero-unit {
+  font-size: 1rem;
+  opacity: 0.75;
+  margin-top: 4px;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.metric {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 16px;
+  text-align: center;
+}
+.metric-val {
+  font-family: 'Fraunces', serif;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1;
+}
+.metric-lbl {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  margin-top: 5px;
+  letter-spacing: 0.04em;
+}
+.metric.highlight {
+  background: var(--gold-light);
+  border-color: #E8C070;
+}
+.metric.highlight .metric-val { color: var(--gold); }
+
+/* ── Meals strip ── */
+.meals-strip {
+  background: var(--green-light);
+  border: 1.5px solid #B8D4C0;
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+  font-size: 0.95rem;
+  color: var(--green);
+}
+.meals-strip .ico { font-size: 1.4rem; flex-shrink: 0; }
+.meals-strip strong { color: var(--green); }
+
+/* ── Vet note ── */
+.vet-note {
+  background: var(--gold-light);
+  border: 1.5px solid #E8C070;
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-size: 0.83rem;
+  color: #7A5208;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+.vet-note strong { color: var(--gold); }
+
+/* ── Affiliate card ── */
+.aff {
+  display: none;
+  text-decoration: none;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 18px 20px;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  transition: all 0.2s;
+}
+.aff.on { display: flex; }
+.aff:hover { border-color: var(--green-mid); background: var(--green-light); }
+.aff-icon { font-size: 2rem; flex-shrink: 0; }
+.aff-body { flex: 1; }
+.aff-title { font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+.aff-sub { font-size: 0.82rem; color: var(--text-mid); line-height: 1.5; }
+.aff-arrow { color: var(--green); font-size: 1.2rem; flex-shrink: 0; }
+
+/* ── Info strip ── */
+.info-strip {
+  background: var(--cream-dark);
+  border-radius: 14px;
+  padding: 20px 22px;
+  margin-bottom: 16px;
+}
+.info-strip h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.info-strip p {
+  font-size: 0.83rem;
+  color: var(--text-mid);
+  line-height: 1.65;
+}
+
+.brand-mark {
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--text-light);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 8px 0;
+}
+
+/* ── Install banner ── */
+.banner {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--white);
+  border-top: 1.5px solid var(--border);
+  padding: 14px 20px;
+  display: flex; align-items: center; gap: 12px;
+  z-index: 100;
+  transform: translateY(100%);
+  animation: slideUp 0.4s 3s ease forwards;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+}
+@keyframes slideUp { to { transform: translateY(0); } }
+.banner.gone { display: none !important; }
+.banner-icon { font-size: 1.3rem; flex-shrink: 0; }
+.banner-text { flex: 1; }
+.banner-title { font-size: 0.78rem; font-weight: 700; color: var(--text); margin-bottom: 1px; }
+.banner-sub   { font-size: 0.7rem; color: var(--text-light); }
+.banner-close { background: none; border: none; color: var(--text-light); font-size: 1.1rem; cursor: pointer; padding: 4px; flex-shrink: 0; }
+.banner-close:hover { color: var(--text); }
+
+/* ── Animations ── */
+@keyframes fadeDown { from { opacity:0; transform:translateY(-14px); } to { opacity:1; transform:none; } }
+@keyframes fadeUp   { from { opacity:0; transform:translateY(14px);  } to { opacity:1; transform:none; } }
+
+/* ── Responsive ── */
+@media (max-width: 400px) {
+  h1 { font-size: 2rem; }
+  .card { padding: 24px 18px; }
+  .hero-kcal { font-size: 3.2rem; }
+  .metrics { grid-template-columns: 1fr 1fr; }
+  .metric-val { font-size: 1.65rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <header>
+    <span class="dog-icon">🐾</span>
+    <h1>Dog Food<br><em>Calculator</em></h1>
+    <p class="tagline">Find out exactly how much to feed your dog — free, fast, no signup</p>
+  </header>
+
+  <!-- Name -->
+  <div class="card">
+    <p class="sect-label"><span class="ico">🏷️</span> Your dog's name <span style="font-size:.8rem;font-weight:400;color:var(--text-light);margin-left:4px;">(optional)</span></p>
+    <input class="name-input" id="dog-name" type="text" placeholder="e.g. Buddy, Luna, Max…" maxlength="30" autocomplete="off">
+  </div>
+
+  <!-- Size -->
+  <div class="card">
+    <p class="sect-label"><span class="ico">📏</span> Breed size</p>
+    <div class="pills" id="pills-size">
+      <button class="pill" data-val="small"  onclick="pick('size',this)">Small<span class="sub">up to 10 kg</span></button>
+      <button class="pill" data-val="medium" onclick="pick('size',this)">Medium<span class="sub">10 – 25 kg</span></button>
+      <button class="pill" data-val="large"  onclick="pick('size',this)">Large<span class="sub">25 – 45 kg</span></button>
+      <button class="pill" data-val="giant"  onclick="pick('size',this)">Giant<span class="sub">over 45 kg</span></button>
+    </div>
+  </div>
+
+  <!-- Age -->
+  <div class="card">
+    <p class="sect-label"><span class="ico">🎂</span> Life stage</p>
+    <div class="pills" id="pills-age">
+      <button class="pill" data-val="puppy"  onclick="pick('age',this)">Puppy<span class="sub">under 1 year</span></button>
+      <button class="pill" data-val="adult"  onclick="pick('age',this)">Adult<span class="sub">1 – 7 years</span></button>
+      <button class="pill" data-val="senior" onclick="pick('age',this)">Senior<span class="sub">7+ years</span></button>
+    </div>
+  </div>
+
+  <!-- Weight -->
+  <div class="card">
+    <p class="sect-label"><span class="ico">⚖️</span> Current weight</p>
+    <div class="weight-row">
+      <button class="w-btn left" id="w-dn">−</button>
+      <div class="w-val" id="w-display">10<span class="w-unit">kg</span></div>
+      <button class="w-btn right" id="w-up">+</button>
+    </div>
+    <p class="w-hint">Hold the button to change quickly</p>
+  </div>
+
+  <!-- Activity -->
+  <div class="card">
+    <p class="sect-label"><span class="ico">🏃</span> Activity level</p>
+    <div class="pills" id="pills-activity">
+      <button class="pill" data-val="low"       onclick="pick('activity',this)">Low<span class="sub">mostly resting</span></button>
+      <button class="pill" data-val="moderate"  onclick="pick('activity',this)">Moderate<span class="sub">daily walks</span></button>
+      <button class="pill" data-val="active"    onclick="pick('activity',this)">Active<span class="sub">runs & play</span></button>
+      <button class="pill" data-val="veryactive" onclick="pick('activity',this)">Very Active<span class="sub">working dog</span></button>
+    </div>
+  </div>
+
+  <!-- Food type -->
+  <div class="card">
+    <p class="sect-label"><span class="ico">🥣</span> Food type</p>
+    <div class="pills" id="pills-food">
+      <button class="pill" data-val="dry"   onclick="pick('food',this)">Dry Kibble<span class="sub">~340 kcal/100g</span></button>
+      <button class="pill" data-val="wet"   onclick="pick('food',this)">Wet Food<span class="sub">~95 kcal/100g</span></button>
+      <button class="pill" data-val="raw"   onclick="pick('food',this)">Raw / BARF<span class="sub">~140 kcal/100g</span></button>
+      <button class="pill" data-val="mixed" onclick="pick('food',this)">Mixed<span class="sub">dry + wet</span></button>
+    </div>
+  </div>
+
+  <button class="calc-btn" onclick="calculate()">Calculate portions for my dog →</button>
+
+  <!-- Results -->
+  <div class="results" id="results">
+
+    <div class="result-hero" id="hero">
+      <p class="hero-name" id="hero-name">DAILY CALORIES NEEDED</p>
+      <div class="hero-kcal" id="hero-kcal">—</div>
+      <p class="hero-unit">kilocalories per day</p>
+    </div>
+
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-val" id="m-grams">—</div>
+        <div class="metric-lbl">grams per day</div>
+      </div>
+      <div class="metric">
+        <div class="metric-val" id="m-per-meal">—</div>
+        <div class="metric-lbl">grams per meal</div>
+      </div>
+      <div class="metric highlight">
+        <div class="metric-val" id="m-daily-cost">—</div>
+        <div class="metric-lbl">est. daily food cost</div>
+      </div>
+      <div class="metric highlight">
+        <div class="metric-val" id="m-monthly">—</div>
+        <div class="metric-lbl">est. monthly cost</div>
+      </div>
+    </div>
+
+    <div class="meals-strip" id="meals-strip">
+      <span class="ico">🍽️</span>
+      <span id="meals-text">—</span>
+    </div>
+
+    <div class="vet-note">
+      <strong>Note:</strong> These figures are a science-based starting point. Every dog is individual — adjust portions if your dog gains or loses weight, and always consult your vet for health-specific advice.
+    </div>
+
+    <!-- Affiliate link — replace YOUR_AFFILIATE_LINK with your Amazon Associates or pet food affiliate URL -->
+    <a class="aff on" id="aff-link" href="YOUR_AFFILIATE_LINK" target="_blank" rel="noopener sponsored">
+      <span class="aff-icon">🛒</span>
+      <div class="aff-body">
+        <div class="aff-title" id="aff-title">Recommended dog food on Amazon</div>
+        <div class="aff-sub">High-quality dry kibble — complete nutrition, no fillers, vet-formulated. Free delivery on eligible orders.</div>
+      </div>
+      <span class="aff-arrow">→</span>
+    </a>
+
+    <div class="brand-mark">🐾 dog food calculator — free &amp; unbiased</div>
+
+  </div>
+
+  <!-- How it works -->
+  <div class="info-strip" style="margin-top:8px;">
+    <h3>How the calculation works</h3>
+    <p>We use the veterinary standard Metabolic Energy Requirement formula: <strong>RER = 70 × (weight in kg)<sup>0.75</sup></strong>, then multiply by an activity factor based on your dog's life stage and exercise level. Food amounts are then calculated from typical caloric densities for each food type.</p>
+  </div>
+
+</div>
+
+<!-- Install banner -->
+<div class="banner" id="banner">
+  <span class="banner-icon">📲</span>
+  <div class="banner-text">
+    <div class="banner-title">Save to your Home Screen</div>
+    <div class="banner-sub" id="bsub">Works offline — no app needed</div>
+  </div>
+  <button class="banner-close" onclick="dismissBanner()">✕</button>
+</div>
+
+<script>
+// ── State ──────────────────────────────────────
+const sel = { size: null, age: null, activity: null, food: null };
+let weight = 10;
+let holdT, holdI;
+
+// ── Pill selection ──────────────────────────────
+function pick(group, btn) {
+  sel[group] = btn.dataset.val;
+  document.querySelectorAll(`#pills-${group} .pill`).forEach(p => p.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+// ── Weight dial ─────────────────────────────────
+function renderWeight() {
+  document.getElementById('w-display').innerHTML =
+    `${weight}<span class="w-unit">kg</span>`;
+}
+
+function bumpW(d) {
+  const step = weight < 5 ? 0.5 : weight < 20 ? 0.5 : 1;
+  weight = Math.max(0.5, Math.min(90, parseFloat((weight + d * step).toFixed(1))));
+  renderWeight();
+}
+
+function hold(fn) { fn(); holdT = setTimeout(() => { holdI = setInterval(fn, 80); }, 400); }
+function release() { clearTimeout(holdT); clearInterval(holdI); }
+
+['w-dn','w-up'].forEach(id => {
+  const el = document.getElementById(id);
+  const d = id === 'w-up' ? 1 : -1;
+  el.addEventListener('mousedown', () => hold(() => bumpW(d)));
+  el.addEventListener('touchstart', e => { e.preventDefault(); hold(() => bumpW(d)); }, { passive: false });
+  ['mouseup','mouseleave','touchend','touchcancel'].forEach(ev => el.addEventListener(ev, release));
+});
+
+// ── Calculate ───────────────────────────────────
+function calculate() {
+  // Validation
+  const missing = ['size','age','activity','food'].filter(k => !sel[k]);
+  if (missing.length) {
+    const labels = { size:'breed size', age:'life stage', activity:'activity level', food:'food type' };
+    alert(`Please select: ${missing.map(k => labels[k]).join(', ')}`);
+    return;
+  }
+
+  // RER
+  const rer = 70 * Math.pow(weight, 0.75);
+
+  // Activity multiplier
+  const actMap = { low: 1.4, moderate: 1.8, active: 2.2, veryactive: 2.8 };
+  let mult;
+  if (sel.age === 'puppy') {
+    mult = weight < 3 ? 3.0 : 2.5;
+  } else if (sel.age === 'senior') {
+    mult = { low: 1.2, moderate: 1.4, active: 1.6, veryactive: 1.8 }[sel.activity];
+  } else {
+    mult = actMap[sel.activity];
+  }
+
+  // Giant breeds are slightly less calorically efficient per kg
+  if (sel.size === 'giant') mult *= 0.93;
+
+  const dailyKcal = Math.round(rer * mult);
+
+  // Food density kcal/100g
+  const density = { dry: 340, wet: 95, raw: 140, mixed: 210 };
+  const gramsDay = Math.round((dailyKcal / density[sel.food]) * 100);
+
+  // Meals per day
+  const meals = sel.age === 'puppy' ? 3 : sel.age === 'senior' ? 2 : sel.activity === 'veryactive' ? 3 : 2;
+  const gramsPerMeal = Math.round(gramsDay / meals);
+
+  // Cost estimate per 100g (£)
+  const costPer100g = { dry: 0.22, wet: 0.32, raw: 0.42, mixed: 0.27 };
+  const dailyCost = (gramsDay / 100) * costPer100g[sel.food];
+  const monthlyCost = dailyCost * 30;
+
+  // ── Render ──
+  const name = document.getElementById('dog-name').value.trim();
+  const displayName = name || 'Your dog';
+
+  document.getElementById('hero-name').textContent =
+    `${displayName.toUpperCase()} NEEDS`;
+  document.getElementById('hero-kcal').textContent =
+    dailyKcal.toLocaleString();
+  document.getElementById('m-grams').textContent =
+    gramsDay.toLocaleString() + 'g';
+  document.getElementById('m-per-meal').textContent =
+    gramsPerMeal.toLocaleString() + 'g';
+  document.getElementById('m-daily-cost').textContent =
+    '£' + dailyCost.toFixed(2);
+  document.getElementById('m-monthly').textContent =
+    '£' + monthlyCost.toFixed(2);
+
+  const mealWord = meals === 1 ? 'meal' : 'meals';
+  document.getElementById('meals-text').innerHTML =
+    `Feed <strong>${gramsPerMeal}g</strong> per meal, <strong>${meals} ${mealWord}</strong> per day — spread meals evenly, ideally at the same times each day.`;
+
+  // Affiliate title personalisation
+  const foodLabels = { dry: 'dry kibble', wet: 'wet food', raw: 'raw food', mixed: 'mixed food' };
+  document.getElementById('aff-title').textContent =
+    `Recommended ${foodLabels[sel.food]} on Amazon`;
+
+  // Show results
+  const res = document.getElementById('results');
+  res.classList.add('on');
+  setTimeout(() => res.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+}
+
+// ── Install banner ──────────────────────────────
+const standalone = window.matchMedia('(display-mode:standalone)').matches || navigator.standalone;
+const dismissed = localStorage.getItem('dfc_dismissed');
+if (standalone || dismissed) {
+  document.getElementById('banner').classList.add('gone');
+} else {
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const isAndroid = /Android/.test(navigator.userAgent);
+  document.getElementById('bsub').textContent = isIOS
+    ? 'Tap Share ↑ then "Add to Home Screen"'
+    : isAndroid ? 'Tap ⋮ then "Add to Home Screen"'
+    : 'Save this file — works offline, no app needed';
+}
+function dismissBanner() {
+  localStorage.setItem('dfc_dismissed', '1');
+  document.getElementById('banner').classList.add('gone');
+}
+</script>
+</body>
+</html>
